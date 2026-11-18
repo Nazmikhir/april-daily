@@ -47,10 +47,17 @@ def main():
     changed = FORCE or (old != new.get("tabs"))
     log["tabs"] = {k: v.get("date") for k, v in new["tabs"].items()}
     log["changed"] = changed
+
+    def emit():
+        line = json.dumps(log, ensure_ascii=False)
+        with open(os.path.join(APP, "update.log"), "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+        return line
+
     if not changed:
         log["action"] = "tiada perubahan kandungan — skip push & deploy"
-        print(json.dumps(log, ensure_ascii=False))
-        return
+        emit()
+        return  # senyap untuk cron no_agent (empty stdout = tiada delivery)
 
     # git commit + push
     gh = env("GITHUB_TOKEN")
@@ -87,7 +94,7 @@ def main():
         _, raw = api("GET", f"https://api.netlify.com/api/v1/deploys/{did}", nl)
         state = json.loads(raw).get("state")
     log["netlify"] = {"deploy": did, "state": state, "uploaded": uploaded}
-    print(json.dumps(log, ensure_ascii=False))
+    print(emit())
 
 
 if __name__ == "__main__":
