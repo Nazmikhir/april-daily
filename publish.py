@@ -38,6 +38,32 @@ def api(method, url, token, payload=None, raw=None, ctype="application/json"):
         return json.loads(body) if body else {}
 
 
+def notify_telegram(text):
+    """Hantar mesej pendek 'selesai' ke Telegram Boss selepas app berjaya update."""
+    token = env("TELEGRAM_BOT_TOKEN")
+    if not token:
+        return "telegram: tiada token"
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/sendMessage",
+        data=json.dumps({"chat_id": "670763478", "text": text}).encode(),
+        headers={"Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return "telegram: hantar" if resp.status == 200 else f"telegram: HTTP {resp.status}"
+    except Exception as e:
+        return f"telegram: gagal ({e})"
+
+
+def fingerprint():
+    """Hash kandungan sebenar (abai 'updated') + assets — untuk skip bila tiada perubahan."""
+    d = json.load(open(os.path.join(APP, "data.json")))
+    d.pop("updated", None)
+    h = hashlib.sha256(json.dumps(d, sort_keys=True, ensure_ascii=False).encode())
+    for p in sorted(glob.glob(os.path.join(APP, "assets/*.jpg"))):
+        h.update(hashlib.sha256(open(p, "rb").read()).digest())
+    return h.hexdigest()
+
+
 def main():
     log = [f"=== {datetime.datetime.now().isoformat(timespec='seconds')} ==="]
     os.chdir(APP)
@@ -46,7 +72,16 @@ def main():
     out = sh("python3 build_data.py")
     log.append(out.splitlines()[0] if out else "build: ok")
 
-    # 2. Commit + push kalau ada perubahan
+    # 2. Skip kalau kandungan sebenar tak berubah (jimat deploy & senyap)
+    fp = fingerprint()
+    state_p = os.path.join(APP, ".publish_state.json")
+    last = json.load(open(state_p)).get("fp") if os.path.exists(state_p) else None
+    if fp == last:
+        log.append("tiada perubahan kandungan — skip push/deploy/notify")
+        print("\n".join(log))
+        return 0
+
+    # 3. Commit + push
     if sh("git status --porcelain"):
         sh("git add -A")
         msg = "chore: auto-update data " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -54,7 +89,7 @@ def main():
         sh("git push -q origin main")
         log.append("git: pushed")
     else:
-        log.append("git: tiada perubahan")
+        log.append("git: tiada perubahan fail")
 
     # 3. Netlify deploy (hanya fail berubah diminta oleh API)
     token = env("NETLIFY_AUTH_TOKEN")
@@ -81,6 +116,13 @@ def main():
         if st in ("ready", "error"):
             break
     log.append(f"netlify: deploy {dep_id[:12]} state={st} (uploaded {len(required)} file)")
+    if st == "ready":
+        json.dump({"fp": fp}, open(state_p, "w"))
+        d = json.load(open(os.path.join(APP, "data.json")))
+        tabs = d.get("tabs", {})
+        ringkas = " · ".join(f"{k} ({v.get('date', '?')})" for k, v in tabs.items())
+        log.append(notify_telegram(
+            f"✅ April Daily selesai update — data dah masuk app:\n{ringkas}\n{conf['url']}"))
     print("\n".join(log))
     return 0 if st == "ready" else 1
 
