@@ -93,13 +93,15 @@ def main():
     else:
         log.append("git: tiada perubahan fail")
 
-    # 3. Netlify deploy (hanya fail berubah diminta oleh API) — resilient:
-    # kalau Netlify gagal (kredit habis dsb.), GitHub Pages tetap update + beritahu Boss.
-    netlify_note = None
-    try:
-        netlify_note = deploy_netlify(log)
-    except Exception as e:
-        netlify_note = f"netlify: GAGAL ({str(e)[:160]}) — GitHub Pages masih update"
+    # 3. Netlify deploy — DIMATIKAN sementara (arah Boss 18 Nov 2026):
+    # GitHub Pages = host utama. Netlify tidak perlu update sampai Boss bagi tahu semula.
+    NETLIFY_ENABLED = False
+    netlify_note = "netlify: dimatikan sementara (GitHub Pages = main)"
+    if NETLIFY_ENABLED:
+        try:
+            netlify_note = deploy_netlify(log)
+        except Exception as e:
+            netlify_note = f"netlify: GAGAL ({str(e)[:160]}) — GitHub Pages masih update"
     log.append(netlify_note)
     if "state=ready" in netlify_note:
         json.dump({"fp": fp}, open(state_p, "w"))
@@ -115,7 +117,8 @@ def main():
 
 
 def conf_url():
-    return json.load(open(os.path.join(APP, "netlify.json")))["url"]
+    # Host utama = GitHub Pages (Netlify dimatikan sementara)
+    return "https://nazmikhir.github.io/april-daily/"
 
 
 def deploy_netlify(log):
