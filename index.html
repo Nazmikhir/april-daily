@@ -367,9 +367,7 @@ async function load(url) {
     const t = d.tabs || {};
     // reset semua pane dulu supaya arkib lama tidak tinggal bila tab tiada
     ['briefing', 'drafts', 'shopee', 'research'].forEach(k => {
-      const emptyMsg = k === 'shopee'
-        ? 'Hanya data penting — tiada auto-update harian untuk tab ini.'
-        : 'Tiada data untuk tarikh ini.';
+      const emptyMsg = 'Tiada data untuk tarikh ini.';
       document.getElementById('body-' + k).innerHTML = '<div class="empty">' + emptyMsg + '</div>';
       document.getElementById('date-' + k).textContent = '';
     });
