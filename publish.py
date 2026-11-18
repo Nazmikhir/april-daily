@@ -103,7 +103,8 @@ def main():
         except Exception as e:
             netlify_note = f"netlify: GAGAL ({str(e)[:160]}) — GitHub Pages masih update"
     log.append(netlify_note)
-    if "state=ready" in netlify_note:
+    netlify_ok = ("state=ready" in netlify_note) or (not NETLIFY_ENABLED)
+    if netlify_ok:
         json.dump({"fp": fp}, open(state_p, "w"))
         d = json.load(open(os.path.join(APP, "data.json")))
         tabs = d.get("tabs", {})
