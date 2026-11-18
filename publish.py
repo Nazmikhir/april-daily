@@ -59,7 +59,7 @@ def fingerprint():
     d = json.load(open(os.path.join(APP, "data.json")))
     d.pop("updated", None)
     h = hashlib.sha256(json.dumps(d, sort_keys=True, ensure_ascii=False).encode())
-    for p in sorted(glob.glob(os.path.join(APP, "assets/*.jpg"))):
+    for p in sorted(glob.glob(os.path.join(APP, "assets/**/*.jpg"), recursive=True)):
         h.update(hashlib.sha256(open(p, "rb").read()).digest())
     return h.hexdigest()
 
@@ -95,7 +95,10 @@ def main():
     token = env("NETLIFY_AUTH_TOKEN")
     conf = json.load(open(os.path.join(APP, "netlify.json")))
     site_id = conf["site_id"]
-    paths = FILES + sorted(os.path.relpath(p, APP) for p in glob.glob(os.path.join(APP, "assets/*.jpg")))
+    paths = FILES + sorted(
+        os.path.relpath(p, APP)
+        for p in glob.glob(os.path.join(APP, "assets/**/*.jpg"), recursive=True)
+        + glob.glob(os.path.join(APP, "archive/*.json")))
     digest = {}
     for p in paths:
         digest["/" + p] = hashlib.sha1(open(p, "rb").read()).hexdigest()

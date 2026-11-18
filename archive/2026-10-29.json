@@ -1,0 +1,9 @@
+{
+ "updated": "2026-11-18T16:16:27",
+ "tabs": {
+  "briefing": {
+   "date": "2026-10-29",
+   "html": "<p>🌸 DAILY MORNING BRIEFING</p>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>📅 {Hari}, {d MMMM yyyy} | {hijri}</p>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>🕌 WAKTU SOLAT — WLY01 (Putrajaya, JAKIM)</p>\n<ul>\n<li>Imsak: hh:mm am</li>\n<li>Subuh: hh:mm am</li>\n<li>Syuruk: hh:mm am</li>\n<li>Zohor: hh:mm pm</li>\n<li>Asar: hh:mm pm</li>\n<li>Maghrib: hh:mm pm</li>\n<li>Isyak: hh:mm pm</li>\n</ul>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>🌤 CUACA PUTRAJAYA</p>\n<ul>\n<li>Keadaan: ...</li>\n<li>Suhu: ...</li>\n<li>Kelembapan: ...</li>\n<li>Angin: ...</li>\n<li>Fasa bulan: ...</li>\n</ul>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>📰 TOP 10 BERITA TERKINI</p>\n<ol>\n<li>... — [Baca lanjut](URL)</li>\n<li>... — [Baca lanjut](URL)</li>\n</ol>\n<p>(...sampai 10)</p>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>📋 GOOGLE TASKS</p>\n<p>⚠️ OVERDUE:</p>\n<ul>\n<li>... ⏳ (Was supposed to be ...)</li>\n<li>... ⏳ (Was supposed to be ...)</li>\n</ul>\n<p>📌 HARI INI (...):</p>\n<ul>\n<li>...</li>\n</ul>\n<p>📅 AKAN DATANG:</p>\n<ul>\n<li>... ⏳ (...)</li>\n<li>... ⏳ (...)</li>\n</ul>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>📅 CALENDAR UPCOMING</p>\n<ul>\n<li>...</li>\n</ul>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>💡 PESANAN HARI INI</p>\n<ul>\n<li>...</li>\n<li>...</li>\n<li>...</li>\n</ul>\n<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>\n<p>⚡️ APA PERLU BUAT DULU</p>\n<ol>\n<li>...</li>\n<li>...</li>\n<li>...</li>\n</ol>\n<p>Kalau bahagian script ada ERROR, tulis section tu dengan '• [tiada data sekarang]' dan teruskan — jangan gagalkan seluruh briefing.</p>\n<p><b>Response Characters:</b> 13</p>\n<h3>Response</h3>\n<p>]&lt;]minimax[&gt;[</p>"
+  }
+ }
+}

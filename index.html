@@ -100,6 +100,9 @@
   #q { width: 100%; padding: 12px 16px; border-radius: 999px; border: 1px solid var(--glass-brd);
        background: rgba(0,0,0,.28); color: var(--txt); font-size: .95rem; outline: none; }
   #q:focus { border-color: var(--acc); }
+  #dateSel { margin-top: 10px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--glass-brd);
+             background: rgba(0,0,0,.3); color: var(--txt); font-size: .78rem; outline: none; cursor: pointer; }
+  #dateSel option { background: #123128; }
   .result { border: 1px solid var(--glass-brd); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px;
             background: rgba(0,0,0,.18); cursor: pointer; transition: border-color .15s; }
   .result:hover { border-color: var(--acc); }
@@ -119,6 +122,9 @@
   <header>
     <h1>🌸 April Daily</h1>
     <div class="sub">Update harian Boss — <span id="updated">loading…</span></div>
+    <select id="dateSel" onchange="pickDate(this.value)" title="Pilih tarikh archive">
+      <option value="latest">📅 Terbaru</option>
+    </select>
   </header>
 
   <div class="panel">
@@ -238,12 +244,18 @@ function jumpTo(tab) {
   go(tab, document.querySelector('[data-tab=' + tab + ']'));
 }
 
-async function load() {
+async function load(url) {
+  url = url || 'data.json';
   try {
-    const r = await fetch('data.json?_=' + Date.now());
+    const r = await fetch(url + '?_=' + Date.now());
     const d = await r.json();
     document.getElementById('updated').textContent = new Date(d.updated).toLocaleString('ms-MY');
     const t = d.tabs || {};
+    // reset semua pane dulu supaya arkib lama tidak tinggal bila tab tiada
+    ['briefing', 'drafts', 'shopee', 'research'].forEach(k => {
+      document.getElementById('body-' + k).innerHTML = '<div class="empty">Tiada data untuk tarikh ini.</div>';
+      document.getElementById('date-' + k).textContent = '';
+    });
     if (t.briefing) {
       document.getElementById('date-briefing').textContent = t.briefing.date;
       document.getElementById('body-briefing').innerHTML = t.briefing.html;
@@ -274,7 +286,28 @@ async function load() {
   buildIndex();
   document.getElementById('search-meta').textContent = INDEX.length + ' item dalam indeks';
 }
-load();
+
+function pickDate(v) {
+  if (v === 'latest') load('data.json');
+  else load('archive/' + v + '.json');
+}
+
+async function initDates() {
+  try {
+    const r = await fetch('archive/index.json?_=' + Date.now());
+    const d = await r.json();
+    const sel = document.getElementById('dateSel');
+    (d.dates || []).forEach(dt => {
+      if (dt === new Date().toISOString().slice(0, 10)) return; // hari ini = Terbaru
+      const o = document.createElement('option');
+      o.value = dt; o.textContent = '🗂 ' + dt;
+      sel.appendChild(o);
+    });
+  } catch (e) { /* archive belum wujud — tiada masalah */ }
+}
+
+load('data.json');
+initDates();
 </script>
 </body>
 </html>
