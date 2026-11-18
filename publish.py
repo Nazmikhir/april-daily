@@ -5,7 +5,7 @@ import subprocess, os, json, hashlib, urllib.request, datetime, glob, time, sys
 
 APP = os.path.expanduser("~/.hermes/apps/april-daily")
 ENV = os.path.expanduser("~/.hermes/.env")
-FILES = ["index.html", "data.json"]  # + semua assets/*.jpg
+FILES = ["index.html", "data.json", "manifest.json"]  # + semua assets/*.jpg + icons/*.png
 
 
 def env(key):
@@ -129,7 +129,8 @@ def deploy_netlify(log):
     paths = FILES + sorted(
         os.path.relpath(p, APP)
         for p in glob.glob(os.path.join(APP, "assets/**/*.jpg"), recursive=True)
-        + glob.glob(os.path.join(APP, "archive/*.json")))
+        + glob.glob(os.path.join(APP, "archive/*.json"))
+        + glob.glob(os.path.join(APP, "icons/*.png")))
     digest = {}
     for p in paths:
         digest["/" + p] = hashlib.sha1(open(p, "rb").read()).hexdigest()
@@ -141,7 +142,7 @@ def deploy_netlify(log):
         p = by_hash.get(h)
         if not p:
             continue
-        ctype = "application/json" if p.endswith(".json") else "image/jpeg" if p.endswith(".jpg") else "text/html"
+        ctype = "application/json" if p.endswith(".json") else "image/jpeg" if p.endswith(".jpg") else "image/png" if p.endswith(".png") else "text/html"
         api("PUT", f"https://api.netlify.com/api/v1/deploys/{dep_id}/files{p}", token,
             raw=open(p.lstrip("/"), "rb").read(), ctype=ctype)
     for _ in range(12):
