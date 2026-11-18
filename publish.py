@@ -93,7 +93,32 @@ def main():
     else:
         log.append("git: tiada perubahan fail")
 
-    # 3. Netlify deploy (hanya fail berubah diminta oleh API)
+    # 3. Netlify deploy (hanya fail berubah diminta oleh API) — resilient:
+    # kalau Netlify gagal (kredit habis dsb.), GitHub Pages tetap update + beritahu Boss.
+    netlify_note = None
+    try:
+        netlify_note = deploy_netlify(log)
+    except Exception as e:
+        netlify_note = f"netlify: GAGAL ({str(e)[:160]}) — GitHub Pages masih update"
+    log.append(netlify_note)
+    if "state=ready" in netlify_note:
+        json.dump({"fp": fp}, open(state_p, "w"))
+        d = json.load(open(os.path.join(APP, "data.json")))
+        tabs = d.get("tabs", {})
+        ringkas = " · ".join(f"{k} ({v.get('date', '?')})" for k, v in tabs.items())
+        log.append(notify_telegram(
+            f"✅ April Daily selesai update — data dah masuk app:\n{ringkas}\n{conf_url()}"))
+    else:
+        log.append(notify_telegram(f"⚠️ April Daily: {netlify_note}"))
+    print("\n".join(log))
+    return 0
+
+
+def conf_url():
+    return json.load(open(os.path.join(APP, "netlify.json")))["url"]
+
+
+def deploy_netlify(log):
     token = env("NETLIFY_AUTH_TOKEN")
     conf = json.load(open(os.path.join(APP, "netlify.json")))
     site_id = conf["site_id"]
@@ -120,16 +145,7 @@ def main():
         st = api("GET", f"https://api.netlify.com/api/v1/deploys/{dep_id}", token).get("state")
         if st in ("ready", "error"):
             break
-    log.append(f"netlify: deploy {dep_id[:12]} state={st} (uploaded {len(required)} file)")
-    if st == "ready":
-        json.dump({"fp": fp}, open(state_p, "w"))
-        d = json.load(open(os.path.join(APP, "data.json")))
-        tabs = d.get("tabs", {})
-        ringkas = " · ".join(f"{k} ({v.get('date', '?')})" for k, v in tabs.items())
-        log.append(notify_telegram(
-            f"✅ April Daily selesai update — data dah masuk app:\n{ringkas}\n{conf['url']}"))
-    print("\n".join(log))
-    return 0 if st == "ready" else 1
+    return f"netlify: deploy {dep_id[:12]} state={st} (uploaded {len(required)} file)"
 
 
 if __name__ == "__main__":
