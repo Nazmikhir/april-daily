@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>April Daily — Update harian Boss</title>
+<style>
+  :root {
+    --glass: rgba(120, 140, 120, 0.16);
+    --glass-brd: rgba(200, 220, 200, 0.22);
+    --active: rgba(190, 215, 185, 0.32);
+    --txt: #eef3ec;
+    --muted: #9db3a4;
+    --acc: #d9c06a;
+  }
+  * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--txt);
+    background:
+      radial-gradient(ellipse 60% 45% at 15% 20%, rgba(217, 192, 106, 0.28), transparent 60%),
+      radial-gradient(ellipse 55% 50% at 85% 15%, rgba(60, 110, 95, 0.55), transparent 65%),
+      radial-gradient(ellipse 70% 55% at 80% 85%, rgba(217, 192, 106, 0.18), transparent 60%),
+      radial-gradient(ellipse 65% 60% at 10% 90%, rgba(35, 80, 70, 0.6), transparent 65%),
+      linear-gradient(160deg, #0c1f1a 0%, #123128 45%, #0a1a16 100%);
+    background-attachment: fixed;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 22px 14px 120px;
+  }
+  .wrap { width: 100%; max-width: 660px; }
+  header { text-align: center; margin-bottom: 18px; }
+  header h1 { font-size: 1.35rem; margin: 0; letter-spacing: .5px; }
+  header .sub { color: var(--muted); font-size: .8rem; margin-top: 4px; }
+  .panel {
+    background: var(--glass); border: 1px solid var(--glass-brd);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-radius: 20px; padding: 18px 18px 22px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    min-height: 55vh;
+  }
+  .panel h2 { font-size: 1.05rem; margin: 0 0 4px; color: var(--acc); }
+  .panel .date { color: var(--muted); font-size: .75rem; margin-bottom: 14px; }
+  .tabpane { display: none; animation: fade .25s ease; }
+  .tabpane.on { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ===== floating pill tab bar (ikut referensi Boss) ===== */
+  .tabbar {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 4px; padding: 7px;
+    background: rgba(90, 110, 95, 0.30);
+    border: 1px solid rgba(200, 220, 200, 0.25);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: 999px;
+    box-shadow: 0 10px 34px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+    z-index: 50;
+  }
+  .tabbar button {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    min-width: 74px; padding: 9px 14px 7px;
+    background: transparent; border: 0; border-radius: 999px;
+    color: var(--muted); cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .tabbar button svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tabbar button span { font-size: .66rem; letter-spacing: .3px; }
+  .tabbar button.active {
+    background: var(--active); color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 10px rgba(0,0,0,.25);
+  }
+  .tabbar button:not(.active):hover { color: #d7e2d8; }
+
+  /* content typography */
+  .panel h3 { font-size: .95rem; color: #e8ddba; margin: 18px 0 6px; }
+  .panel h4 { font-size: .88rem; color: #e8ddba; margin: 14px 0 4px; }
+  .panel p, .panel li { font-size: .86rem; line-height: 1.65; color: #dde6dd; }
+  .panel ul, .panel ol { padding-left: 20px; margin: 6px 0; }
+  .panel a { color: var(--acc); text-decoration: none; word-break: break-all; }
+  .panel a:hover { text-decoration: underline; }
+  .panel hr { border: 0; border-top: 1px solid rgba(200,220,200,.15); margin: 16px 0; }
+  .panel blockquote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--acc); background: rgba(217,192,106,.07); border-radius: 0 10px 10px 0; white-space: pre-line; }
+  .panel code { background: rgba(0,0,0,.35); padding: 1px 6px; border-radius: 6px; font-size: .8rem; }
+  .panel pre { background: rgba(0,0,0,.35); padding: 12px; border-radius: 12px; overflow-x: auto; }
+  .draft-card { border: 1px solid var(--glass-brd); border-radius: 16px; padding: 14px; margin-bottom: 16px; background: rgba(0,0,0,.18); }
+  .draft-card h3 { margin-top: 0; }
+  .draft-card .body { white-space: pre-line; font-size: .88rem; line-height: 1.7; color: #e6ede6; }
+  .draft-card img { width: 100%; border-radius: 12px; margin-top: 12px; display: block; }
+  .badge { display: inline-block; font-size: .66rem; color: var(--acc); border: 1px solid rgba(217,192,106,.4); border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .empty { color: var(--muted); font-size: .85rem; padding: 30px 0; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌸 April Daily</h1>
+    <div class="sub">Update harian Boss — <span id="updated">loading…</span></div>
+  </header>
+
+  <div class="panel">
+    <section id="pane-briefing" class="tabpane on">
+      <h2>🌤 Morning Briefing</h2><div class="date" id="date-briefing"></div>
+      <div id="body-briefing"><div class="empty">Memuatkan…</div></div>
+    </section>
+    <section id="pane-drafts" class="tabpane">
+      <h2>✍️ Draf Post Harian</h2><div class="date" id="date-drafts"></div>
+      <div id="body-drafts"><div class="empty">Memuatkan…</div></div>
+    </section>
+    <section id="pane-shopee" class="tabpane">
+      <h2>🛒 Shopee Affiliate</h2><div class="date" id="date-shopee"></div>
+      <div id="body-shopee"><div class="empty">Memuatkan…</div></div>
+    </section>
+    <section id="pane-research" class="tabpane">
+      <h2>🔬 Research 3PM</h2><div class="date" id="date-research"></div>
+      <div id="body-research"><div class="empty">Memuatkan…</div></div>
+    </section>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <button class="active" data-tab="briefing" onclick="go('briefing', this)">
+    <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+    <span>Briefing</span>
+  </button>
+  <button data-tab="drafts" onclick="go('drafts', this)">
+    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+    <span>Draf Post</span>
+  </button>
+  <button data-tab="shopee" onclick="go('shopee', this)">
+    <svg viewBox="0 0 24 24"><path d="M6 7h12l1.5 13.5a1 1 0 0 1-1 1.1h-13a1 1 0 0 1-1-1.1Z"/><path d="M8.5 10V6a3.5 3.5 0 0 1 7 0v4"/></svg>
+    <span>Shopee</span>
+  </button>
+  <button data-tab="research" onclick="go('research', this)">
+    <svg viewBox="0 0 24 24"><path d="M10 2v7L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V2"/><path d="M8.5 2h7"/><path d="M7 15h10"/></svg>
+    <span>Research</span>
+  </button>
+</nav>
+
+<script>
+function go(tab, btn) {
+  document.querySelectorAll('.tabpane').forEach(p => p.classList.remove('on'));
+  document.getElementById('pane-' + tab).classList.add('on');
+  document.querySelectorAll('.tabbar button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+async function load() {
+  try {
+    const r = await fetch('data.json?_=' + Date.now());
+    const d = await r.json();
+    document.getElementById('updated').textContent = new Date(d.updated).toLocaleString('ms-MY');
+    const t = d.tabs || {};
+    if (t.briefing) {
+      document.getElementById('date-briefing').textContent = t.briefing.date;
+      document.getElementById('body-briefing').innerHTML = t.briefing.html;
+    }
+    if (t.drafts) {
+      document.getElementById('date-drafts').textContent = t.drafts.date;
+      const el = document.getElementById('body-drafts');
+      el.innerHTML = (t.drafts.items || []).map(it => `
+        <div class="draft-card">
+          <span class="badge">Draf ${it.n}</span>
+          <h3>${it.title}</h3>
+          <div class="body">${it.text.replace(/</g, '&lt;')}</div>
+          ${it.card ? `<img src="${it.card}" alt="Kad visual draf ${it.n}" loading="lazy">` : ''}
+        </div>`).join('') || '<div class="empty">Tiada draf hari ini.</div>';
+    }
+    if (t.shopee) {
+      document.getElementById('date-shopee').textContent = t.shopee.date;
+      document.getElementById('body-shopee').innerHTML = t.shopee.html;
+    }
+    if (t.research) {
+      document.getElementById('date-research').textContent = t.research.date;
+      document.getElementById('body-research').innerHTML = t.research.html;
+    }
+  } catch (e) {
+    document.getElementById('updated').textContent = 'gagal load data.json';
+    console.error(e);
+  }
+}
+load();
+</script>
+</body>
+</html>
