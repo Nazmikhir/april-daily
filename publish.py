@@ -59,6 +59,8 @@ def fingerprint():
     d = json.load(open(os.path.join(APP, "data.json")))
     d.pop("updated", None)
     h = hashlib.sha256(json.dumps(d, sort_keys=True, ensure_ascii=False).encode())
+    # index.html turut dikira supaya perubahan UI memicu deploy
+    h.update(hashlib.sha256(open(os.path.join(APP, "index.html"), "rb").read()).digest())
     for p in sorted(glob.glob(os.path.join(APP, "assets/**/*.jpg"), recursive=True)):
         h.update(hashlib.sha256(open(p, "rb").read()).digest())
     return h.hexdigest()
