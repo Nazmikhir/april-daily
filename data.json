@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T11:00:01",
+ "updated": "2026-11-22T11:30:01",
  "tabs": {
   "briefing": {
    "date": "2026-11-22",
@@ -7,7 +7,26 @@
   },
   "drafts": {
    "date": "2026-11-22",
-   "items": []
+   "items": [
+    {
+     "n": 1,
+     "title": "November ni nampak macam bulan big tech finally \"show the money\" pada Malaysia.",
+     "text": "November ni nampak macam bulan big tech finally \"show the money\" pada Malaysia.\n\nGoogle umum US$15 bilion untuk 2027-2028. Microsoft pula US$2.2 bilion dengan cloud region SEA3 di Johor Bahru. AWS komit RM29.2 bilion sehingga 2037. SoftBank, Grab dan PETROS pula masukkan US$1.85 bilion modal awal, dengan sasaran jangka panjang 5GW compute.\n\nSementara itu MIDA kata kelulusan data centre dan cloud untuk sembilan bulan pertama 2026 dah mencecah RM123.5 bilion, naik 44.5% berbanding tahun lepas. Itu 35.2% daripada semua pelaburan yang diluluskan negara.\n\nTapi ada satu soalan yang tak semua orang nak jawab terus: grid kuasa, bekalan air, dan tanah Johor — cukup ke untuk semua ni?\n\n#MalaysiaTech",
+     "card": "assets/2026-11-22/card-1.jpg"
+    },
+    {
+     "n": 2,
+     "title": "Ekosistem startup Malaysia tengah bergerak pantas separuh tahun ni.",
+     "text": "Ekosistem startup Malaysia tengah bergerak pantas separuh tahun ni.\n\nLaporan Kickstart Ventures & DealStreetAsia untuk H1 2026: startup Malaysia kutip US$203 juta merentas 27 deals. Tiga kali ganda berbanding separuh tahun sebelumnya, dan kedua terbesar di Asia Tenggara selepas Singapura.\n\nWangnya datang dari pelbagai hala. Budget 2027 peruntukkan RM41 juta untuk Cradle dan RM450 juta untuk Jelawang Capital serta Dana Perintis. Penjana Kapital pula ada programme RM1.2 bilion dengan matching 1:1 daripada kerajaan. MDEC pula dah bantu lebih US$850 juta modal untuk lebih 450 syarikat tech tempatan sejak 2021 — baru-baru ini 15 firma pitch di Founders Grindstone selepas 156 sesi mentoring. Penang pula dah rekod 356 startup tahun ni, dengan target 500 menjelang 2030.\n\nKesimpulan yang ramai founder sebut sekarang: capital bukan yang scarce. Readiness yang scarce.\n\n#StartupMY",
+     "card": "assets/2026-11-22/card-2.jpg"
+    },
+    {
+     "n": 3,
+     "title": "Data centre Malaysia tengah meletup. Tapi ada satu \"ceiling\" yang orang jarang sebut.",
+     "text": "Data centre Malaysia tengah meletup. Tapi ada satu \"ceiling\" yang orang jarang sebut.\n\nJohor je dah lompat dari 10 MW kapasiti pada 2021 kepada sekitar 5.3 GW dalam pipeline hari ni. Seluruh negara pula ada 51 data centre yang dah beroperasi, dengan 33 lagi bakal siap. Pasaran data centre Malaysia bernilai sekitar US$6.14 bilion pada 2025, dan dijangka mencecah US$11.4 bilion menjelang 2031.\n\nTapi inilah twist-nya: setiap hyperscaler kini basically kena \"bawa bekal sendiri\". Google contohnya janji tambah lebih 1GW tenaga bersih ke grid nasional bersama TNB tanpa subsidi awam, sekali dengan loji rawatan air di Negeri Sembilan yang mampu supply 65 juta liter air terawat sehari.\n\nSementara itu Sunway Construction menang kontrak RM1.74 bilion untuk data centre hyperscale di Serendah, dan DCTF kini kenakan syarat 30% kandungan tempatan untuk projek baharu.\n\nMalaysia sasar jadi \"AI nation\" menjelang 2030. Tapi kuasa dan air — itulah bottleneck sebenar.\n\n#DataCentreMY",
+     "card": "assets/2026-11-22/card-3.jpg"
+    }
+   ]
   },
   "shopee": {
    "date": "2026-11-21",
